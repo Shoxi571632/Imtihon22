@@ -1,58 +1,63 @@
 ﻿using Imtihon22.Model;
 using System.Text.Json;
+using System.IO;
+using System.Collections.Generic;
 
-namespace Imtihon22.Service;
-
-internal class JsonOperations
+namespace Imtihon22.Service
 {
-    public static List<User> users = new List<User>();
-    public static List<Book> books = new List<Book>();
-    const string UserFilePath = @"C:\Users\Shokhrukh\OneDrive\Desktop\Imtihon222\Imtihon22\Imtihon22\JsonFiles\Users.jon";
-    const string BookFilePath = @"C:\Users\Shokhrukh\OneDrive\Desktop\Imtihon222\Imtihon22\Imtihon22\JsonFiles\Books.json";
-
-    public static void LoadData()
+    internal class JsonOperations
     {
-        try
+        public static List<User> users = new List<User>();
+        public static List<Book> books = new List<Book>();
+
+        public static void LoadData()
         {
-            if (File.Exists(UserFilePath))
+            try
             {
-                var userData = File.ReadAllText(UserFilePath);
-                if (!string.IsNullOrWhiteSpace(userData))
+                string userFilePath = Singleton.GetUserPath();
+                if (File.Exists(userFilePath))
                 {
-                    users = JsonSerializer.Deserialize<List<User>>(userData) ?? new List<User>();
+                    var userData = File.ReadAllText(userFilePath);
+                    if (!string.IsNullOrWhiteSpace(userData))
+                    {
+                        users = JsonSerializer.Deserialize<List<User>>(userData) ?? new List<User>();
+                    }
+                }
+
+                string bookFilePath = Singleton.GetBookPath();
+                if (File.Exists(bookFilePath))
+                {
+                    var bookData = File.ReadAllText(bookFilePath);
+                    if (!string.IsNullOrWhiteSpace(bookData))
+                    {
+                        books = JsonSerializer.Deserialize<List<Book>>(bookData) ?? new List<Book>();
+                    }
                 }
             }
-
-            if (File.Exists(BookFilePath))
+            catch (JsonException)
             {
-                var bookData = File.ReadAllText(BookFilePath);
-                if (!string.IsNullOrWhiteSpace(bookData))
-                {
-                    books = JsonSerializer.Deserialize<List<Book>>(bookData) ?? new List<Book>();
-                }
+                Console.WriteLine("Error reading JSON data. Starting with an empty list.");
+                users = new List<User>();
+                books = new List<Book>();
             }
         }
-        catch (JsonException)
-        {
-            Console.WriteLine("Error reading JSON data. Starting with an empty list.");
-            users = new List<User>();
-            books = new List<Book>();
-        }
-    }
 
-    public static void SaveData()
-    {
-        try
+        public static void SaveData()
         {
-            var userData = JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(UserFilePath, userData);
+            try
+            {
+                string userFilePath = Singleton.GetUserPath();
+                var userData = JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(userFilePath, userData);
 
-            var bookData = JsonSerializer.Serialize(books, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(BookFilePath, bookData);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error saving data: {ex.Message}");
+                string bookFilePath = Singleton.GetBookPath();
+                var bookData = JsonSerializer.Serialize(books, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(bookFilePath, bookData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving data: {ex.Message}");
+            }
         }
     }
 }
