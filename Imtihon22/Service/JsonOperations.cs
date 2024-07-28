@@ -7,8 +7,8 @@ internal class JsonOperations
 {
     public static List<User> users = new List<User>();
     public static List<Book> books = new List<Book>();
-    const string UserFilePath = @"C:\Users\99891\OneDrive\Ishchi stol\G7\Imtihon22\Imtihon22\JsonFiles\Users.json";
-    const string BookFilePath = @"C:\Users\99891\OneDrive\Ishchi stol\G7\Imtihon22\Imtihon22\JsonFiles\Books.json";
+    const string UserFilePath = @"C:\Users\Shokhrukh\OneDrive\Desktop\Imtihon222\Imtihon22\Imtihon22\JsonFiles\Users.jon";
+    const string BookFilePath = @"C:\Users\Shokhrukh\OneDrive\Desktop\Imtihon222\Imtihon22\Imtihon22\JsonFiles\Books.json";
 
     public static void LoadData()
     {
